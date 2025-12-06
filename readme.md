@@ -46,4 +46,3 @@ Decisões de modelagem
 - Pagamentos permitem múltiplas formas por cliente; pedido pode associar-se a múltiplos pagamentos.
 - Entrega possui status e código de rastreio.
 
-Agora é sua vez de executar os scripts e adaptar conforme o SGBD alvo.
