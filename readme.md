@@ -16,23 +16,34 @@ Estrutura do projeto
 - docs/diagrama.md   -> Notas sobre decisões de modelagem
 - .gitignore
 
-Como executar (SQLite)
-1. Criar o arquivo de banco e aplicar o schema:
-   - Usando o CLI: sqlite3 ecommerce.db ".read schema/schema.sql"
-   - Ou: sqlite3 ecommerce.db < schema/schema.sql
-2. Habilitar foreign keys (caso necessário):
-   - No CLI: sqlite3 ecommerce.db "PRAGMA foreign_keys = ON;"
-   - O schema já define PRAGMA foreign_keys = ON no topo para execução via .read.
-3. Popular dados:
-   - sqlite3 ecommerce.db ".read seed/seed.sql"
-   - Ou: sqlite3 ecommerce.db < seed/seed.sql
-4. Testar consultas:
-   - sqlite3 ecommerce.db ".read queries/queries.sql"
-   - Ou abrir no DB Browser for SQLite e executar os arquivos SQL.
+Como executar (SQLite) - Projetos separados
+- E-commerce (banco: ecommerce.db)
+  1. Criar o arquivo de banco e aplicar o schema do e-commerce:
+     - sqlite3 ecommerce.db ".read schema/schema.sql"
+  2. Popular dados do e-commerce:
+     - sqlite3 ecommerce.db ".read seed/seed.sql"
+  3. Testar consultas do e-commerce:
+     - sqlite3 ecommerce.db ".read queries/queries.sql"
+
+- Oficina (banco: oficina.db)
+  1. Criar o arquivo de banco e aplicar o schema da oficina:
+     - sqlite3 oficina.db ".read schema/oficina_schema.sql"
+  2. Popular dados da oficina:
+     - sqlite3 oficina.db ".read seed/oficina_seed.sql"
+  3. Testar consultas da oficina:
+     - sqlite3 oficina.db ".read queries/oficina_queries.sql"
+
+**Limpeza e re-execução**
+- Se houver erros de UNIQUE constraint, remova o arquivo .db e recrie:
+  - rm oficina.db (ou del oficina.db no Windows)
+  - sqlite3 oficina.db ".read schema/oficina_schema.sql"
+  - sqlite3 oficina.db ".read seed/oficina_seed.sql"
+- Alternativamente, os scripts agora contêm DROP TABLE IF EXISTS e DELETE para permitir re-execução segura.
 
 Observações
-- SQLite usa tipos mais permissivos; alguns defaults e funções de data foram adaptados (datetime('now')).
-- Verifique se o cliente/GUI usado respeita PRAGMA foreign_keys (o CLI e DB Browser normalmente respeitam).
+- Cada conjunto de arquivos (schema/seed/queries) é autocontido para seu respectivo DB.
+- Os schemas começam com: PRAGMA foreign_keys = ON;
+- Não é possível trocar de database dentro de um arquivo SQL no SQLite; por isso os arquivos foram duplicados e adaptados para cada DB.
 
 Perguntas exemplo respondidas nas queries
 - Quantos pedidos foram feitos por cada cliente?
@@ -45,4 +56,19 @@ Decisões de modelagem
 - Fornecedores e vendedores apontam para uma tabela geral pessoa para permitir sobreposição (um mesmo indivíduo pode ser fornecedor e vendedor).
 - Pagamentos permitem múltiplas formas por cliente; pedido pode associar-se a múltiplos pagamentos.
 - Entrega possui status e código de rastreio.
+
+Oficina (Workshop) — novo escopo
+- O projeto foi expandido para contemplar um modelo de oficina mecânica.
+- Foram adicionadas tabelas para: veículos, mecânicos, serviços, peças, estoque de peças, ordens de serviço e itens de ordem.
+- Regras importantes:
+  - Uma ordem_de_servico referencia cliente e veículo; pode ter itens de tipo 'servico' ou 'peca'.
+  - Ordem_item garante que ou servico_id OU peca_id esteja preenchido (XOR).
+  - Peças podem ter fornecedores (reaproveita tabela fornecedor).
+
+Como executar (notas rápidas)
+- Use os mesmos comandos SQLite já descritos; o schema agora contém as tabelas da oficina.
+- Para recarregar do zero: remova/rename ecommerce.db e rode:
+  1. sqlite3 ecommerce.db ".read schema/schema.sql"
+  2. sqlite3 ecommerce.db ".read seed/seed.sql"
+  3. sqlite3 ecommerce.db ".read queries/queries.sql"
 

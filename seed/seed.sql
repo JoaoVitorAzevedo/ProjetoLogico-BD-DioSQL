@@ -1,4 +1,4 @@
--- Dados de exemplo (SQLite)
+-- Dados de exemplo (SQLite) - E-COMMERCE
 
 -- Clientes
 INSERT INTO cliente (nome, email, cpf, cnpj, telefone) VALUES
@@ -10,18 +10,16 @@ INSERT INTO pessoa (nome, documento) VALUES
 ('Mariana Souza', '987.654.321-00'),
 ('Fornecedor X LTDA', '55.555.555/0001-00');
 
--- Fornecedor e Vendedor (mesma pessoa -> será ambos)
+-- Fornecedor e Vendedor (mesma pessoa)
 INSERT INTO fornecedor (pessoa_id, nome_fantasia) VALUES (1, 'Mariana Fornecimentos');
 INSERT INTO vendedor (pessoa_id, codigo_vendedor) VALUES (1, 'VEND-001');
-
--- Outro fornecedor
 INSERT INTO fornecedor (pessoa_id, nome_fantasia) VALUES (2, 'Fornecedor X');
 
 -- Produtos
 INSERT INTO produto (nome, descricao, preco) VALUES
 ('Teclado Mecânico', 'Teclado mecânico RGB', 299.90),
 ('Mouse Gamer', 'Mouse com DPI ajustável', 149.50),
-('Monitor 24"', 'Monitor Full HD 24 polegadas', 799.00);
+('Monitor 24\"', 'Monitor Full HD 24 polegadas', 799.00);
 
 -- Associação produto <-> fornecedor
 INSERT INTO produto_fornecedor (produto_id, fornecedor_id, preco_fornecedor) VALUES
@@ -35,13 +33,13 @@ INSERT INTO estoque (produto_id, quantidade, localizacao) VALUES
 (2, 25, 'CD-SP'),
 (3, 5, 'CD-RJ');
 
--- Pagamentos (múltiplas formas por cliente)
+-- Pagamentos
 INSERT INTO pagamento (cliente_id, tipo, detalhes) VALUES
 (1, 'cartao', 'Visa **** 4242'),
 (1, 'pix', 'joao.pix@pag'),
 (2, 'boleto', 'Conta 001');
 
--- Pedidos e itens (datas usando datetime do SQLite)
+-- Pedidos e itens
 INSERT INTO pedido (cliente_id, vendedor_id, data_pedido, status) VALUES
 (1, 1, datetime('now','-10 days'), 'concluido'),
 (1, 1, datetime('now','-2 days'), 'processando'),

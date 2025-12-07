@@ -1,8 +1,7 @@
--- Schema DDL (SQLite)
+-- Schema DDL (SQLite) - E-COMMERCE
 
 PRAGMA foreign_keys = ON;
 
--- Tabelas principais
 CREATE TABLE cliente (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	nome TEXT NOT NULL,
@@ -10,7 +9,6 @@ CREATE TABLE cliente (
 	cpf TEXT,
 	cnpj TEXT,
 	telefone TEXT,
-	-- garante que OU cpf OU cnpj esteja preenchido, mas não ambos
 	CHECK (
 		( (cpf IS NULL AND cnpj IS NOT NULL) OR (cpf IS NOT NULL AND cnpj IS NULL) )
 	)
@@ -105,6 +103,5 @@ CREATE TABLE entrega (
 	FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE
 );
 
--- Índices auxiliares
 CREATE INDEX IF NOT EXISTS idx_produto_nome ON produto(nome);
 CREATE INDEX IF NOT EXISTS idx_cliente_email ON cliente(email);
